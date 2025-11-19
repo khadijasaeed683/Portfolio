@@ -1,17 +1,19 @@
 name: Build and Deploy
+
 env:
   CI: false
   GITHUB_USERNAME: ${{ github.repository_owner }}
-  REACT_APP_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This is automatically set by Github Actions
   USE_GITHUB_DATA: "true"
-  MEDIUM_USERNAME: "saadpasta" # Change this to your medium username
+  MEDIUM_USERNAME: "Khadija Saeed" # Change this to your Medium username
+
 on:
   workflow_dispatch:
   push:
     branches:
       - master
   schedule:
-    - cron: "0 12 * * 1" # see https://docs.github.com/en/actions/reference/events-that-trigger-workflows#scheduled-events
+    - cron: "0 12 * * 1" # Runs every Monday at 12:00 UTC
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -22,14 +24,14 @@ jobs:
           persist-credentials: false
 
       - name: Setup Node.js 🔧
-        uses: actions/setup-node@v3.8.1
+        uses: actions/setup-node@v3
         with:
-          node-version: 20.x   # <-- Updated Node version
+          node-version: 20.x
 
-      # - name: Update npm 🚀
-      #   run: npm install -g npm@latest   # <-- Removed, not needed
+      - name: Update npm 🚀
+        run: npm install -g npm@latest
 
-      - name: Install and Build 🔧
+      - name: Install dependencies & Build 🔧
         run: |
           npm install
           npm run build
@@ -37,6 +39,8 @@ jobs:
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: build
+          token: ${{ secrets.GITHUB_TOKEN }}      # Correct key name
+          branch: gh-pages                        # Deployment branch
+          folder: build                            # Folder to deploy
+          commit-message: "chore: deploy gh-pages 🌐"
+          single-commit: true                     # Avoids long history on gh-pages
