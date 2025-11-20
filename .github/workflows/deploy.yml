@@ -5,6 +5,7 @@ env:
   GITHUB_USERNAME: ${{ github.repository_owner }}
   USE_GITHUB_DATA: "true"
   MEDIUM_USERNAME: "Khadija Saeed"
+  REACT_APP_GITHUB_TOKEN: ${{ secrets.GH_API_TOKEN }}   # IMPORTANT
 
 on:
   workflow_dispatch:
@@ -18,8 +19,7 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: write   # REQUIRED for pushing to gh-pages
-
+      contents: read   # Only correct permission
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
@@ -31,12 +31,7 @@ jobs:
         with:
           node-version: 20.x
 
-      - name: Update npm 🚀
-        run: npm install -g npm@latest
-
       - name: Install dependencies & Build 🔧
-        env:
-          REACT_APP_GITHUB_TOKEN: ${{ secrets.PORTFOLIO_TOKEN }}  # YOUR custom secret for fetching repos
         run: |
           npm install
           npm run build
@@ -47,5 +42,5 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
           folder: build
-          commit-message: "chore: deploy gh-pages 🌐"
           single-commit: true
+          commit-message: "Deploy 🚀"
