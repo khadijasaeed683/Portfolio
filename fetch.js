@@ -2,7 +2,7 @@ const fs = require("fs");
 const https = require("https");
 const process = require("process");
 
-// Only load .env locally (not in GitHub Actions)
+// Only load .env locally (never in GitHub Actions)
 if (!process.env.CI) require("dotenv").config();
 
 // Read environment variables
@@ -17,15 +17,17 @@ const ERR = {
     "The request to GitHub didn't succeed. Check if GitHub token in your workflow or .env file is correct.",
 };
 
-// Only run if USE_GITHUB_DATA is true
 if (USE_GITHUB_DATA === "true") {
   if (!GITHUB_USERNAME) {
-    throw new Error(ERR.noUserName);
+    console.error(ERR.noUserName);
+    return; // Don't break deployment
   }
+
   if (!GITHUB_TOKEN) {
-    throw new Error(
+    console.error(
       "GitHub token is missing! Make sure REACT_APP_GITHUB_TOKEN is set in your workflow or .env."
     );
+    return;
   }
 
   console.log(`Fetching profile data for ${GITHUB_USERNAME}...`);
@@ -80,16 +82,20 @@ if (USE_GITHUB_DATA === "true") {
   const req = https.request(options, (res) => {
     let responseData = "";
 
-    console.log(`statusCode: ${res.statusCode}`);
-    if (res.statusCode !== 200) {
-      throw new Error(ERR.requestFailed);
-    }
+    console.log("GitHub API Status:", res.statusCode);
 
     res.on("data", (chunk) => {
       responseData += chunk;
     });
 
     res.on("end", () => {
+      // Allow successful codes
+      if (res.statusCode !== 200 && res.statusCode !== 201) {
+        console.error("GitHub API Error:", res.statusCode);
+        console.error("Response:", responseData);
+        return; // Skip writing file but do NOT fail build
+      }
+
       fs.writeFile("./public/profile.json", responseData, (err) => {
         if (err) return console.error(err);
         console.log("Saved file to public/profile.json");
@@ -98,7 +104,7 @@ if (USE_GITHUB_DATA === "true") {
   });
 
   req.on("error", (error) => {
-    throw error;
+    console.error("Request error:", error);
   });
 
   req.write(queryData);

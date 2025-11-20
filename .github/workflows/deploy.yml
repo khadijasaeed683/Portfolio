@@ -4,7 +4,7 @@ env:
   CI: false
   GITHUB_USERNAME: ${{ github.repository_owner }}
   USE_GITHUB_DATA: "true"
-  MEDIUM_USERNAME: "Khadija Saeed" # Change this to your Medium username
+  MEDIUM_USERNAME: "Khadija Saeed"
 
 on:
   workflow_dispatch:
@@ -12,11 +12,14 @@ on:
     branches:
       - master
   schedule:
-    - cron: "0 12 * * 1" # Runs every Monday at 12:00 UTC
+    - cron: "0 12 * * 1"
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # REQUIRED for pushing to gh-pages
+
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
@@ -32,6 +35,8 @@ jobs:
         run: npm install -g npm@latest
 
       - name: Install dependencies & Build 🔧
+        env:
+          REACT_APP_GITHUB_TOKEN: ${{ secrets.PORTFOLIO_TOKEN }}  # YOUR custom secret for fetching repos
         run: |
           npm install
           npm run build
@@ -39,8 +44,8 @@ jobs:
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}      # Correct key name
-          branch: gh-pages                        # Deployment branch
-          folder: build                            # Folder to deploy
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages
+          folder: build
           commit-message: "chore: deploy gh-pages 🌐"
-          single-commit: true                     # Avoids long history on gh-pages
+          single-commit: true
