@@ -194,7 +194,7 @@ const workExperiences = {
     {
       role: "Game Developer Intern",
       company: "MLabs",
-      companylogo: require("./assets/images/MLABS.png"), // replace with your actual logo if available
+      companylogo: require("./assets/images/MlabLogo.png"), // replace with your actual logo if available
       date: "June 2024 – August 2024",
       desc: "Developed a 3D hyper-casual game 'Froggy’s Fate' using Unity 3D as part of MLabs Summer Program.",
       descBullets: [
@@ -205,7 +205,7 @@ const workExperiences = {
     {
       role: "Odoo Developer (Intern)",
       company: "Ustadam",
-      companylogo: require("./assets/images/MLABS.png"), // replace with real logo if available
+      companylogo: require("./assets/images/ustadam.png"), // replace with real logo if available
       date: "June 2024 – August 2024",
       desc: "Worked collaboratively with the Ustadam team on Odoo ERP system development and customization.",
       descBullets: [
@@ -216,7 +216,7 @@ const workExperiences = {
     {
       role: "Freelance Developer & Designer",
       company: "Self-Employed",
-      companylogo: require("./assets/images/LinkedInAICertificate.png"), // optional placeholder
+      companylogo: require("./assets/images/selfEmployed.jpeg"), // optional placeholder
       date: "March 2021 – Present",
       desc: "Delivered freelance projects across software development, UI/UX design, databases, and graphic design.",
       descBullets: [
@@ -243,27 +243,27 @@ const bigProjects = {
   // subtitle: "SOME STARTUPS AND COMPANIES THAT I HELPED TO CREATE THEIR TECH",
   projects: [
     {
-      image: require("./assets/images/Logo.png"),
-      projectName: "Saayahealth",
-      projectDesc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-      footerLink: [
-        {
-          name: "Visit Website",
-          url: "http://saayahealth.com/"
-        }
-        //  you can add extra buttons here.
-      ]
+      image: require("./assets/images/Logo2.png"),
+      projectName: "Eventnest",
+      projectDesc: "MERN Stack web application to manage societies, events, and members effectively.",
+      // footerLink: [
+      //   {
+      //     name: "Visit Website",
+      //     url: "http://saayahealth.com/"
+      //   }
+      //   //  you can add extra buttons here.
+      // ]
     },
     {
-      image: require("./assets/images/nextuLogo.webp"),
-      projectName: "Nextu",
-      projectDesc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-      footerLink: [
-        {
-          name: "Visit Website",
-          url: "http://nextu.se/"
-        }
-      ]
+      image: require("./assets/images/chess.jpeg"),
+      projectName: "Chess",
+      projectDesc: "A 2D chess game developed in Unity with AI opponent, multiplayer mode, and intuitive UI.",
+      // footerLink: [
+      //   {
+      //     name: "Visit Website",
+      //     url: "http://nextu.se/"
+      //   }
+      // ]
     }
   ],
   display: true // Set false to hide this section, defaults to true

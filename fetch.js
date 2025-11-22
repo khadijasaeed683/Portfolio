@@ -2,28 +2,26 @@ const fs = require("fs");
 const https = require("https");
 const process = require("process");
 
-// Load local .env only if not in GitHub Actions
+// Load local .env only if NOT running on GitHub Actions
 if (!process.env.CI) require("dotenv").config();
 
 // Read environment variables
-const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN || ""; // Empty string if not set
-const GITHUB_USERNAME = process.env.GITHUB_USERNAME || "khadijasaeed683"; // fallback to your username
+const GITHUB_TOKEN = process.env.GH_PAGES_TOKEN || ""; // FIX: use your real secret name
+const GITHUB_USERNAME = process.env.GITHUB_USERNAME || "khadijasaeed683"; 
 const USE_GITHUB_DATA = process.env.USE_GITHUB_DATA || "true";
 
 const ERR = {
   noUserName:
-    "GitHub Username was found to be undefined. Please set relevant environment variables.",
-  requestFailed:
-    "The request to GitHub didn't succeed. Check your GitHub token in workflow or .env file.",
+    "GitHub Username is undefined. Please set GITHUB_USERNAME in secrets or .env",
 };
 
 if (USE_GITHUB_DATA === "true") {
   if (!GITHUB_USERNAME) {
     console.error(ERR.noUserName);
-    return; // Don't break deployment
+    return;
   }
 
-  console.log(`Fetching profile data for ${GITHUB_USERNAME}...`);
+  console.log(`Fetching GitHub profile data for ${GITHUB_USERNAME}...`);
 
   const queryData = JSON.stringify({
     query: `{
@@ -33,7 +31,6 @@ if (USE_GITHUB_DATA === "true") {
         avatarUrl
         location
         pinnedItems(first: 6, types: [REPOSITORY]) {
-          totalCount
           edges {
             node {
               ... on Repository {
@@ -64,7 +61,7 @@ if (USE_GITHUB_DATA === "true") {
     port: 443,
     method: "POST",
     headers: {
-      Authorization: GITHUB_TOKEN ? `Bearer ${GITHUB_TOKEN}` : "", // only if token exists
+      Authorization: `Bearer ${GITHUB_TOKEN}`, // FIXED
       "User-Agent": "Node",
       "Content-Type": "application/json",
     },
@@ -80,15 +77,15 @@ if (USE_GITHUB_DATA === "true") {
     });
 
     res.on("end", () => {
-      if (res.statusCode !== 200 && res.statusCode !== 201) {
-        console.error("GitHub API Error:", res.statusCode);
+      if (res.statusCode !== 200) {
+        console.error("❌ GitHub API Error:", res.statusCode);
         console.error("Response:", responseData);
-        return; // Skip writing file but do NOT fail build
+        return;
       }
 
       fs.writeFile("./public/profile.json", responseData, (err) => {
         if (err) return console.error(err);
-        console.log("Saved file to public/profile.json ✅");
+        console.log("✅ Saved file: public/profile.json");
       });
     });
   });
